@@ -10,12 +10,13 @@ export default class DetailPage extends React.Component {
     }
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 1,backgroundColor:'#f5f4f9' }}>
                 <Text>Popular Screen</Text>
                 <LottieView
                     ref={animation => {
                         this.animation = animation;
                     }}
+                    // loop={false} // 取消循环播放
                     source={require('../../animation/monster.json')} />
             </View>
         );
