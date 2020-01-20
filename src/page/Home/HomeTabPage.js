@@ -14,6 +14,7 @@ const screenWidth = Dimensions.get('window').width;
 
 export default class HomeTabPage extends React.Component {
     componentDidMount() {
+        //  一个就相当于一个页面了
         views.push(<View key={1} style={{ width: screenWidth, backgroundColor: 'purple' }} />)
         views.push(<View key={2} style={{ width: screenWidth, backgroundColor: 'green' }} />)
         views.push(<View key={3} style={{ width: screenWidth, backgroundColor: 'yellow' }} />)

@@ -19,7 +19,8 @@ import posed from 'react-native-pose' // react-native 动画库
 
 import WelcomePage from '../page/Welcome/WelcomePage'
 // import HomePage from '../page/Home/HomePage' // 原生方法创建
-import HomePage from '../page/Home/HomeTabPage'
+// import HomePage from '../page/Home/HomeTabPage' // scrollView实现
+import HomePage from '../page/Home/HomeTabViewPage' // 插件实现
 import TrendingPage from '../page/Home/TrendingPage'
 import FavoritePage from '../page/Home/FavoritePage'
 import MyPage from '../page/Home/MyPage'

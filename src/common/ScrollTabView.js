@@ -12,7 +12,7 @@ import TabIndicator from './TabIndicator'
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-//集成TabIndicator和需要滚动的子视图
+//集成TabIndicator和需要滚动的子视图 
 export default class ScrollTabView extends Component {
     //这里的属性基本就是TabIndicator的除了titles,这个是所有tab的名称,当然最后也是传给TabIndicator的
     static propTypes = {
