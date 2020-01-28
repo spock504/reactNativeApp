@@ -19,20 +19,21 @@ const Styles = StyleSheet.create({
 export default () => {
   return <ScrollableTabView
     // style={{ marginTop: 20 }}
+    // tabBarActiveTextColor="#41affc"
     tabBarUnderlineStyle={Styles.underline}
-    // initialPage={0} // 指定默认tab
+    // initialPage={0}
     renderTabBar={() => <CustomTabBar
       tabUnderlineScaleX={3}
-      activeColor={"#0af"}
+      activeColor={"#41affc"}
       inactiveColor={"#333"}
       backgroundColor={'#f4f4f4'}
       tabUnderlineDefaultWidth={20} // default containerWidth / (numberOfTabs * 4)
     />}
   >
-    <Text tabLabel='Tab 热门'>My</Text>
-    <Text tabLabel='Tab 推荐'>favorite</Text>
-    <Text tabLabel='Tab 关注'>project</Text>
-    {/*<Text tabLabel='Tab #4 word'>favorite</Text>*/}
-    {/*<Text tabLabel='Tab #5'>project</Text>*/}
+    <Text tabLabel='Tab 热门 '>热门</Text>
+    <Text tabLabel='Tab'>Tab</Text>
+    <Text tabLabel='Tab 关注'>关注</Text>
+    <Text tabLabel='Tab #4 word'>word</Text>
+    <Text tabLabel='Tab #5'>project</Text>
   </ScrollableTabView>;
 }
