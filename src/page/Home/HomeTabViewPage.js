@@ -26,14 +26,16 @@ export default () => {
       tabUnderlineScaleX={3}
       activeColor={"#41affc"}
       inactiveColor={"#333"}
-      backgroundColor={'#f4f4f4'}
+      backgroundColor={'#fff'} // 背景色
       tabUnderlineDefaultWidth={20} // default containerWidth / (numberOfTabs * 4)
     />}
   >
-    <Text tabLabel='Tab 热门 '>热门</Text>
-    <Text tabLabel='Tab'>Tab</Text>
+    <Text tabLabel='Tab 热门'>热门</Text>
+    <Text tabLabel='Tab 中测试'>Tab</Text>
     <Text tabLabel='Tab 关注'>关注</Text>
     <Text tabLabel='Tab #4 word'>word</Text>
     <Text tabLabel='Tab #5'>project</Text>
+    {/* <Text tabLabel='Tab #6'>project</Text> */}
+    {/* <Text tabLabel='Tab #7'>project</Text> */}
   </ScrollableTabView>;
 }

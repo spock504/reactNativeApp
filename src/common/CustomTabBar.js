@@ -21,68 +21,72 @@ export default class CustomTabBar extends Component {
         this.state = {
             activeDefaultColor: '#08086b',
             inactiveDefaultColor: '#666666',
-            activeTab:props.activeTab,
+            activeTab: props.activeTab,
+            laoutTextList:[],
+            leftPosition: 15, // 文本距左边的距离
         }
-        this.laout_list = [] //
-        this.scrollW = 0 
+        this.laoutList = [] //按钮数据容器
+        this.scrollW = 0 // 按钮总长度初始值
+        // this.laoutTextList = [] // 文本数据容器
     }
 
 
     UNSAFE_componentWillReceiveProps(props) { // React16 新特性 
-        const {activeTab} = this.state
+        const { activeTab } = this.state
         // console.log("activeTab",activeTab,props.activeTab)
         if (activeTab !== props.activeTab) { // 仅更新一次
-            this.setState({activeTab:props.activeTab})
+            this.setState({ activeTab: props.activeTab })
             this.setIndex(props.activeTab, false);
         }
     }
 
     _renderUnderline() {
-        const containerWidth = this.props.containerWidth;
         const numberOfTabs = this.props.tabs.length;
-        // const underlineWidth = this.props.tabUnderlineDefaultWidth ? this.props.tabUnderlineDefaultWidth : containerWidth / (numberOfTabs * 2);
-        // const scale = this.props.tabUnderlineScaleX ? this.props.tabUnderlineScaleX : 3;
-        // const deLen = (containerWidth / numberOfTabs - underlineWidth ) / 2;
         const tabUnderlineStyle = {
             position: 'absolute',
-            width: '100%',
-            height: 2,
-            borderRadius: 2,
-            backgroundColor: this.props.activeColor,
             bottom: 5,
-            left: 20
+            height: 2,
+            backgroundColor: this.props.activeColor,
+            width: 0.9,
+            left: 0,
         };
+        const {laoutTextList,leftPosition} = this.state
 
-        const translateX = this.props.scrollValue.interpolate({
-            inputRange: [0, 0.5, 1, 1.5, 2, 2.5],
-            outputRange: [0, 30, 0, 30, 0, 30],
-        });
-        // console.log("this.props.translateX--- ",translateX)
-        // console.log("numberOfTabs --- ",numberOfTabs)
-
-        const scaleValue = (defaultScale) => {
-            let arr = new Array(numberOfTabs * 2);
-            // console.log("arr", arr.fill(0), defaultScale)
-            return arr.fill(0).reduce(function (pre, cur, idx) {
-                idx == 0 ? pre.inputRange.push(cur) : pre.inputRange.push(pre.inputRange[idx - 1] + 0.5);
-                idx % 2 ? pre.outputRange.push(defaultScale) : pre.outputRange.push(1)
+        const scaleValue = () => {
+            let arr = new Array(numberOfTabs);
+            return arr.fill(0).reduce( (pre, cur, idx) => {
+                pre.inputRange.push(idx)
+                laoutTextList.length ===  numberOfTabs ? pre.outputRange.push(laoutTextList[idx].width) : pre.outputRange.push(10)
                 return pre
             }, { inputRange: [], outputRange: [] })
         }
+        const scaleX = this.props.scrollValue.interpolate(scaleValue());
 
-        const scaleX = this.props.scrollValue.interpolate(scaleValue(1));
-        // console.log("scaleX", scaleX)
-
+        const translateXValue = () => {
+            let arr = new Array(numberOfTabs);
+            // console.log("arr", arr.fill(0), defaultScale)
+            return arr.fill(0).reduce( (pre, cur, idx) => {
+                pre.inputRange.push(idx)
+                //  需要等tab数据渲染 结束才可添加 *** 应该可优化 暂没想到怎么写
+                laoutTextList.length ===  numberOfTabs && this.laoutList.length === numberOfTabs ? pre.outputRange.push(this.laoutList[idx].x + (laoutTextList[idx].width + leftPosition )/2) : pre.outputRange.push(idx*10)
+                // if (laoutTextList.length ===  numberOfTabs && this.laoutList.length === numberOfTabs) {
+                //     // console.log("laoutList[idx]  w宽度 ww",idx,this.laoutList[idx].width,'---',laoutTextList[idx].width)
+                //     console.log("laoutList[idx]  x坐标 xx",idx,this.laoutList[idx].x,'---',laoutTextList[idx].x)
+                // }
+                return pre
+            }, { inputRange: [], outputRange: [] })
+        }
+        const translateX = this.props.scrollValue.interpolate(translateXValue());
+        // console.log("translateXValue",translateXValue())
         return (
             <Animated.View
                 style={[
                     tabUnderlineStyle,
                     {
                         transform: [
-                            // { translateX },
-                            { scaleX }
+                            { translateX},
+                            { scaleX}
                         ],
-
                     },
                     this.props.underlineStyle,
                 ]}
@@ -91,15 +95,12 @@ export default class CustomTabBar extends Component {
     }
 
     _renderTab(name, page, isTabActive, onPressHandler) {
-        const { textStyle } = this.props;
+        const {leftPosition} = this.state
         const textColor = isTabActive ? this.props.activeColor : this.props.inactiveColor;
-
         const fontWeight = isTabActive ? 'bold' : 'normal';
-
         const Button = Platform.OS == 'ios' ? ButtonIos : ButtonAndroid;
 
         return (<Button
-            // style={{flex: 1}}
             key={name}
             accessible={true}
             accessibilityLabel={name}
@@ -108,63 +109,72 @@ export default class CustomTabBar extends Component {
                 this.setIndex(page)
                 onPressHandler(page)
             }}
-            onLayout={e => this.setLaout(e.nativeEvent.layout, page)} 
+            onLayout={e => this.setLaout(e.nativeEvent.layout, page)}
         >
-            <View style={styles.tab}>
-                <Text style={[{ color: textColor, fontWeight }]}>
-                    {name}
-                </Text>
-                {
-                    isTabActive ? this._renderUnderline() : null
-                }
+            <View style={[styles.tab]}>
+                <Text
+                    onLayout={e => this.setTextLaout(e.nativeEvent.layout, page)}
+                    style={[{ color: textColor, fontWeight,paddingLeft:leftPosition }]}>{name}</Text>
             </View>
         </Button>);
     }
 
     setIndex(index, bl = true) {
         //先改变点击项的颜色
-        // this.setState({ index })
+        this.setState({ activeTab: index })
+        // console.log("index",index)
         //兼容错误
         if (!this.scroll) return;
         //拿到当前项的位置数据
-        let layout = this.laout_list[index];
+        let layout = this.laoutList[index];
         let rx = deviceWidth / 2;
         //公式
-        let sx = layout.x - rx + layout.width / 2;
+        let sx = layout.x - rx + layout.width / 2; // ** 需要滑动的距离
         //如果还不需要移动,原地待着
         if (sx < 0) sx = 0;
         //移动位置
         sx < this.scrollW - deviceWidth && this.scroll.scrollTo({ x: sx, animated: bl });
         //结尾部分直接移动到底
         sx >= this.scrollW - deviceWidth && this.scroll.scrollToEnd({ animated: bl });
-        console.log("sx",sx,deviceWidth,'---',this.scrollW,this.props.scrollValue)
+        // console.log("sx --",sx,"layout -- ",layout,"deviceWidth--",deviceWidth,'---',this.scrollW)
     }
-    
+
 
     setLaout(layout, index) {
         // console.log("每个tab的宽度 -- ",layout,index)
         //存单个项的位置
-        this.laout_list[index] = layout;
+        this.laoutList[index] = layout;
         //计算所有项的总长度
         this.scrollW += layout.width;
     }
 
+    setTextLaout(layout, index) {
+        //存单个项的位置
+        const {laoutTextList} = this.state
+        laoutTextList[index] = layout
+        // console.log("layout--",layout)
+        this.setState({
+            laoutTextList
+        })
+    }
+
     render() {
         // console.log("this,props",this.props)
-        // this.setIndex(this.props.activeTab)
+        const { backgroundColor = '#fff' } = this.props
         return (
-            <View style={{height: 50}}>
+            <View style={[styles.tabHeight, { backgroundColor: backgroundColor }]}>
                 <ScrollView
                     ref={e => this.scroll = e}
                     horizontal  // 水平滚动
                     directionalLockEnabled
                     showsHorizontalScrollIndicator={false}
                     snapToAlignment="center"
-                    style={[styles.tabs, { backgroundColor: this.props.backgroundColor }, this.props.style]}>
+                    style={[styles.tabHeight, styles.tabs, { backgroundColor: backgroundColor }]}>
                     {this.props.tabs.map((name, page) => {
                         const isTabActive = this.props.activeTab === page;
                         return this._renderTab(name, page, isTabActive, this.props.goToPage)
                     })}
+                    {this._renderUnderline()}
                 </ScrollView>
             </View>
 
@@ -190,22 +200,18 @@ const ButtonIos = (props) => (<TouchableOpacity {...props}>
 
 const styles = StyleSheet.create({
     tab: {
-        // flex: 1,
-        // paddingHorizontal:14,
-        paddingLeft: 20,
-        paddingRight: 25,
+        // paddingLeft: 10,
+        paddingRight: 15,
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
     },
     tabs: {
-        height: 50,
         flexDirection: 'row',
-        // justifyContent: 'space-around',
-        borderWidth: 1,
-        borderTopWidth: 0,
-        borderLeftWidth: 0,
-        borderRightWidth: 0,
-        borderColor: '#f4f4f4',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f5f5f5',
     },
+    tabHeight: {
+        height: 46,
+    }
 });
