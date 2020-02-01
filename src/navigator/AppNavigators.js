@@ -9,6 +9,10 @@ import {
     createAppContainer,
     createSwitchNavigator,
 } from 'react-navigation';
+import {
+    createReduxContainer,
+} from 'react-navigation-redux-helpers';
+import { connect } from 'react-redux';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,12 +20,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import posed from 'react-native-pose' // react-native 动画库
 
-
 import WelcomePage from '../page/Welcome/WelcomePage'
 import HomePage from '../page/Home/HomePage'
 import TrendingPage from '../page/Home/TrendingPage'
-import FavoritePage from '../page/Home/FavoritePage'
+import DetailPage from '../page/Detail/Detail'
 import MyPage from '../page/Home/MyPage'
+import NavigationUtil from './NavigationUtil'
 
 const Scaler = posed.View({ // 定义点击缩放
     active: { scale: 1 },
@@ -83,7 +87,8 @@ const SwitchNavigatorConfig = {
         const { routes, index: activeRouteIndex } = navigation.state
         // console.log("props----", props)
         console.log("routes----路由", routes)
-
+        console.log("this.props.navigation ",props.navigation )
+        NavigationUtil.navigation = props.navigation //JJ
         return (
             <Scaler style={Styles.container}>
                 {routes.map((route, routeIndex) => {
@@ -177,9 +182,38 @@ const MainNavigator = createBottomTabNavigator({
     },
 }, SwitchNavigatorConfig);
 
-//NOTE: 通过 createSwitchNavigator 一次只显示一个页面。作用： 将欢迎页和首页联系起来
-const AppNavigator = createSwitchNavigator({
-    Init: InitNavigator,
-    Main: MainNavigator,
+
+//  其余路由
+const InfoNavigator = createStackNavigator({
+    DetailPage2222: {
+        screen: DetailPage,
+        navigationOptions: {
+            header: null
+        }
+    }
 })
-export default createAppContainer(AppNavigator);
+
+const TotalNavigator = createSwitchNavigator({
+    Main: MainNavigator,
+    Info: InfoNavigator,
+})
+
+//NOTE: 通过 createSwitchNavigator 一次只显示一个页面。作用： 将欢迎页和首页联系起来
+const RootNavigator = createSwitchNavigator({
+    Init: InitNavigator,
+    Total: TotalNavigator,
+})
+
+const AppNavigator = createAppContainer(RootNavigator);
+
+const App = createReduxContainer(AppNavigator);
+const mapStateToProps = (state) => ({
+    state: state.nav,
+});
+
+const AppWithNavigationState = connect(mapStateToProps)(App);
+
+export {
+    AppNavigator,
+    AppWithNavigationState,
+}

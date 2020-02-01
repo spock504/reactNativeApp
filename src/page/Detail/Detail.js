@@ -1,7 +1,29 @@
 import React from 'react'
-import { View, Text } from 'react-native';
+import { View, Text, BackHandler } from 'react-native';
+import { connect } from 'react-redux';
+import { NavigationActions } from "react-navigation";
 
-export default class DetailPage extends React.Component {
+class DetailPage extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    componentDidMount() {
+        BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
+    }
+    onBackPress = () => {
+        const { dispatch, nav } = this.props;
+        if (nav.index === 0) {
+            return false;
+        }
+
+        dispatch(NavigationActions.back());
+        return true;
+    };
+
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: '#f5f4f9' }}>
@@ -10,3 +32,9 @@ export default class DetailPage extends React.Component {
         );
     }
 }
+const mapStateToProps = ({ nav }) => {
+    return {
+        nav
+    }
+}
+export default connect(mapStateToProps)(DetailPage);

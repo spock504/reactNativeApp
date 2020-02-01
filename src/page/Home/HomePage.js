@@ -1,9 +1,6 @@
 /* 
     通过原生的createMaterialTopTabNavigator 设置导航的样式 
     => 实现底部选项卡样式
-    缺点: 
-    1. 没找到一个合适的方式实现跟 tab、底部指示器 样式的宽度的自适应
-    2. 无法实现顶部的导航数量的变化
 */
 import React from 'react'
 import { StyleSheet, TouchableHighlight, View, Text, ScrollView } from 'react-native'
@@ -28,55 +25,37 @@ const Styles = StyleSheet.create({
         height: 3,
         backgroundColor: '#41affc',
         borderRadius: 10,
-        width: 60,
+        width: 60, // 设置固定宽度的下划线, 有个问题 ：tab标题需要写死
         marginLeft: 15,
     },
+    labelStyle: {
+        fontSize: 14,
+    }
 })
 
-const TabNavigator = createMaterialTopTabNavigator({
-    PopularTab1: {
-        screen: PopularTab,
-        navigationOptions: {
-            title: '来啊'
+const setTabs = () => {
+    const tabs = {}
+    const tabNames = ['Java','Android','IOS','React']
+    tabNames.forEach((value,index) => {
+        tabs[`tab${index}`] = {
+            screen: (props) =><DetailTab {...props} tabLabel={value} />, // 往页面中传递参数
+            navigationOptions: {
+                title: value
+            }
         }
-    },
-    PopularTab2: {
-        screen: DetailTab,
-        navigationOptions: {
-            title: '导航啊'
-        }
-    },
-    PopularTab3: {
-        screen: DetailTab,
-        navigationOptions: {
-            title: 'DetailTab'
-        }
-    },
-    PopularTab4: {
-        screen: DetailTab,
-        navigationOptions: {
-            title: 'Detail'
-        }
-    },
-    PopularTab5: {
-        screen: DetailTab,
-        navigationOptions: {
-            title: 'DetailTab'
-        }
-    },
-    PopularTab6: {
-        screen: DetailTab,
-        navigationOptions: {
-            title: 'Tab'
-        }
-    },
-}, {
+    })
+    return tabs
+}
+
+const TabNavigator = createMaterialTopTabNavigator(
+    setTabs(), {
     tabBarOptions: {
         style: Styles.container,
         tabStyle: Styles.tabStyle,
         indicatorStyle: Styles.indicatorStyle, // 底部横线样式
+        labelStyle:Styles.labelStyle, // 文本样式
         upperCaseLabel: false, // 取消文本大写
-        scrollEnabled: true, // 当选校卡较长是是否可以滚动
+        scrollEnabled: true, // 当选项卡较长是是否可以滚动
         activeTintColor: '#41affc',
         inactiveTintColor: '#6b6d6e',
     },

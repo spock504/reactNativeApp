@@ -9,6 +9,10 @@ import {
     createAppContainer,
     createSwitchNavigator,
 } from 'react-navigation';
+import {
+    createReduxContainer,
+} from 'react-navigation-redux-helpers';
+import { connect } from 'react-redux';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import LottieView from 'lottie-react-native';
@@ -192,8 +196,21 @@ const MainNavigator = createBottomTabNavigator({
 }, SwitchNavigatorConfig);
 
 //NOTE: 通过 createSwitchNavigator 一次只显示一个页面。作用： 将欢迎页和首页联系起来
-const AppNavigator = createSwitchNavigator({
+const RootNavigator = createSwitchNavigator({
     Init: InitNavigator,
     Main: MainNavigator,
 })
-export default createAppContainer(AppNavigator);
+
+const AppNavigator = createAppContainer(RootNavigator);
+
+const App = createReduxContainer(AppNavigator);
+const mapStateToProps = (state) => ({
+    state: state.nav,
+});
+
+const AppWithNavigationState = connect(mapStateToProps)(App);
+
+export {
+    AppNavigator,
+    AppWithNavigationState,
+}

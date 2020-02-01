@@ -1,41 +1,63 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
-  Text,
   View,
-  StyleSheet,
+  Text,
 } from 'react-native';
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
+import { connect } from 'react-redux'
 
-import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
-
+import NavigationUtil from '../../navigator/NavigationUtil'
 import CustomTabBar from '../../common/CustomTabBar'
+import { actionTest } from '../../actions/home'
 
-const Styles = StyleSheet.create({
-  underline: {
-    height: 2,
-    backgroundColor: '#41affc',
+// const Styles = StyleSheet.create({
+//   underline: {
+//     height: 2,
+//     backgroundColor: '#41affc',
+//   }
+// })
+
+class HomeTabView extends Component {
+  constructor(props) {
+    super(props)
   }
-})
 
-export default () => {
-  return <ScrollableTabView
-    // style={{ marginTop: 20 }}
-    // tabBarActiveTextColor="#41affc"
-    tabBarUnderlineStyle={Styles.underline}
-    // initialPage={0}
-    renderTabBar={() => <CustomTabBar
-      tabUnderlineScaleX={3}
-      activeColor={"#41affc"}
-      inactiveColor={"#333"}
-      backgroundColor={'#fff'} // 背景色
-      tabUnderlineDefaultWidth={20} // default containerWidth / (numberOfTabs * 4)
-    />}
-  >
-    <Text tabLabel='Tab 热门'>热门</Text>
-    <Text tabLabel='Tab 中测试'>Tab</Text>
-    <Text tabLabel='Tab 关注'>关注</Text>
-    <Text tabLabel='Tab #4 word'>word</Text>
-    <Text tabLabel='Tab #5'>project</Text>
-    {/* <Text tabLabel='Tab #6'>project</Text> */}
-    {/* <Text tabLabel='Tab #7'>project</Text> */}
-  </ScrollableTabView>;
+  componentDidMount() {
+    const { dispatch } = this.props
+    dispatch(actionTest({ payload: '测试一下' }))
+  }
+
+
+  render() {
+    // console.log("this --home", this.props.homeReducer)
+    return (
+      <ScrollableTabView
+        // style={{ marginTop: 20 }}
+        // tabBarUnderlineStyle={Styles.underline} // 下划线样式
+        // initialPage={0} // 设置默认显示的tab项
+        renderTabBar={() => <CustomTabBar
+          activeColor={"#41affc"} // 文本选中颜色
+          inactiveColor={"#333"} // 文本未选中颜色
+          backgroundColor={'#fff'} // 背景色
+        />}
+      >
+        <View tabLabel='Tab 热门'>
+          <Text>热门</Text>
+          <Text onPress={() => NavigationUtil.goToPage('DetailPage')}>跳转外层tab</Text>
+        </View>
+        <Text tabLabel='Tab 中测试'>Tab</Text>
+        <Text tabLabel='Tab 关注'>关注</Text>
+        <Text tabLabel='Tab #4 word'>word</Text>
+        <Text tabLabel='Tab #5'>project</Text>
+      </ScrollableTabView>
+    )
+  }
 }
+
+const mapStateToProps = ({ homeReducer }) => {
+  return {
+    homeReducer
+  }
+}
+
+export default connect(mapStateToProps)(HomeTabView)

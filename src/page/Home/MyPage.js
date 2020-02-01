@@ -1,19 +1,17 @@
 import React from 'react'
 import { View, Text,TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class HomeScreen extends React.Component {
+import { onChangeTheme } from '../../actions/theme'
+
+class MyScreen extends React.Component {
     render() {
-        const {navigation} = this.props
+        const {navigation,onChangeTheme} = this.props
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text>My Screen</Text>
                 <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                    navigation.setParams({
-                        theme:{
-                            tintColor: '#d5d5d5',
-                            updateTime: new Date().getTime(),
-                        }
-                    })
+                   onChangeTheme('blue')
                 }}>
                     <Text>修改主题色</Text>
                 </TouchableOpacity>
@@ -21,3 +19,16 @@ export default class HomeScreen extends React.Component {
         );
     }
 }
+
+const mapStateToProps = ({ themeReducer }) => {
+    return {
+        themeReducer,
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onChangeTheme: (theme) => dispatch(onChangeTheme({ payload: theme }))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyScreen);

@@ -19,25 +19,21 @@ export default class CustomTabBar extends Component {
         super(props);
 
         this.state = {
-            activeDefaultColor: '#08086b',
-            inactiveDefaultColor: '#666666',
             activeTab: props.activeTab,
             laoutTextList:[],
             leftPosition: 15, // 文本距左边的距离
         }
         this.laoutList = [] //按钮数据容器
         this.scrollW = 0 // 按钮总长度初始值
-        // this.laoutTextList = [] // 文本数据容器
     }
-
 
     UNSAFE_componentWillReceiveProps(props) { // React16 新特性 
         const { activeTab } = this.state
-        // console.log("activeTab",activeTab,props.activeTab)
         if (activeTab !== props.activeTab) { // 仅更新一次
             this.setState({ activeTab: props.activeTab })
             this.setIndex(props.activeTab, false);
         }
+
     }
 
     _renderUnderline() {
@@ -50,7 +46,7 @@ export default class CustomTabBar extends Component {
             width: 0.9,
             left: 0,
         };
-        const {laoutTextList,leftPosition} = this.state
+        const {laoutTextList, leftPosition} = this.state
 
         const scaleValue = () => {
             let arr = new Array(numberOfTabs);
@@ -138,7 +134,6 @@ export default class CustomTabBar extends Component {
         sx >= this.scrollW - deviceWidth && this.scroll.scrollToEnd({ animated: bl });
         // console.log("sx --",sx,"layout -- ",layout,"deviceWidth--",deviceWidth,'---',this.scrollW)
     }
-
 
     setLaout(layout, index) {
         // console.log("每个tab的宽度 -- ",layout,index)

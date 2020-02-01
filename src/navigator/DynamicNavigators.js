@@ -1,66 +1,27 @@
-import React, { Component } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableHighlight,
-} from 'react-native';
+import React, { Component } from 'react'
 import {
     createAppContainer,
     createSwitchNavigator,
 } from 'react-navigation';
+import {
+    createReduxContainer,
+} from 'react-navigation-redux-helpers';
+import { connect } from 'react-redux';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import posed from 'react-native-pose' // react-native 动画库
 
-
-import WelcomePage from '../page/Welcome/WelcomePage'
+import TabBarComponent from './TabBarNavigators'
 // import HomePage from '../page/Home/HomePage' // 原生方法创建
 // import HomePage from '../page/Home/HomeTabPage' // scrollView实现
-import HomePage from '../page/Home/HomeTabViewPage' // 插件实现
+import HomePage from '../page/Home/HomeTabViewPage' // 插件实现 可滚动tab
+// import HomePage from '../page/Home/HomeTabFitPage' // 插件实现 自适应&&不可滚动
+import WelcomePage from '../page/Welcome/WelcomePage'
 import TrendingPage from '../page/Home/TrendingPage'
-import FavoritePage from '../page/Home/FavoritePage'
+import DetailPage from '../page/Detail/Detail'
 import MyPage from '../page/Home/MyPage'
-
-const Scaler = posed.View({ // 定义点击缩放
-    active: { scale: 1 },
-    inactive: { scale: 0.9 }
-})
-const Styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        height: 53,
-        borderWidth: 1,
-        borderRadius: 1,
-        borderColor: '#EEEEEE',
-        // shadowOffset: { width: 5, height: 10 },
-        // shadowOpacity: 0.75,
-        // elevation: 1
-    },
-    tabButton: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    scaler: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    scalerOnline: {
-        flex: 1,
-        alignItems: 'center',
-        marginTop: -20,
-    },
-    iconText: {
-        fontSize: 12,
-        lineHeight: 20
-    }
-})
-
 
 const SwitchNavigatorConfig = {
     initialRouteName: 'HomePage',
@@ -74,85 +35,6 @@ const SwitchNavigatorConfig = {
         <TabBarComponent {...props} />
     )
 }
-
-class TabBarComponent extends Component {
-    constructor(props) {
-        super(props)
-        this.theme = {
-            tintColor: '#41affc',  // 选中的自定义的默认颜色
-            updateTime: new Date().getTime(),
-        }
-    }
-    render() {
-        const {
-            renderIcon,
-            getLabelText,
-            activeTintColor,
-            inactiveTintColor,
-            onTabPress,
-            onTabLongPress,
-            getAccessibilityLabel,
-            navigation
-        } = this.props
-
-        const { routes, index: activeRouteIndex } = navigation.state
-        if (routes[activeRouteIndex].params) { // 从路由中获取需要设置的动态颜色
-            const {theme} = routes[activeRouteIndex].params
-            if (theme && theme.updateTime > this.theme.updateTime) { // 时间的比较：取最后一次修改的颜色值
-                this.theme = theme
-            }
-        }
-        const {tintColor} = this.theme
-        // console.log("props----", props)
-        // console.log("routes----路由", routes)
-        return (
-            <Scaler style={Styles.container}>
-                {routes.map((route, routeIndex) => {
-                    const isRouteActive = routeIndex === activeRouteIndex
-                    return (
-                        <TouchableHighlight
-                            key={routeIndex}
-                            style={Styles.tabButton}
-                            onPress={() => {
-                                onTabPress({ route })
-                            }}
-                            onLongPress={() => {
-                                onTabLongPress({ route })
-                            }}
-                            underlayColor="#fff"
-                        >
-                            {route.key == 'TrendingPage' ? ( // 对特殊图标进行特殊处理
-                                <Scaler
-                                    style={Styles.scalerOnline}
-                                    pose={isRouteActive ? 'active' : 'inactive'}
-                                >
-                                    {renderIcon({ route, focused: isRouteActive, tintColor })}
-                                </Scaler>
-                            ) : ( // 普通图标普通处理
-                                    <Scaler
-                                        style={Styles.scaler}
-                                        pose={isRouteActive ? 'active' : 'inactive'}
-                                    >
-                                        {renderIcon({ route, focused: isRouteActive, tintColor })}
-                                        <Text style={[Styles.iconText, {color: isRouteActive ? tintColor : inactiveTintColor}]}>{getLabelText({ route })}</Text>
-                                    </Scaler>
-                                )}
-                        </TouchableHighlight>
-                    )
-                })}
-            </Scaler>
-        )
-    }
-}
-
-const InitNavigator = createStackNavigator({
-    WelcomePage: {
-        screen: WelcomePage,
-        navigationOptions: {
-            header: null
-        }
-    }
-})
 
 const MainNavigator = createBottomTabNavigator({
     HomePage: {
@@ -196,9 +78,49 @@ const MainNavigator = createBottomTabNavigator({
     },
 }, SwitchNavigatorConfig);
 
-//NOTE: 通过 createSwitchNavigator 一次只显示一个页面。作用： 将欢迎页和首页联系起来
-const AppNavigator = createSwitchNavigator({
-    Init: InitNavigator,
+//  配置底部Tab的头部导航栏样式
+MainNavigator.navigationOptions = ({ navigation }) => {
+    return {
+        header: null,
+    }
+}
+
+//  配置app头部导航栏样式
+const TotalNavigator = createStackNavigator({
     Main: MainNavigator,
+    DetailPage: DetailPage,
+}, {
+    defaultNavigationOptions: {
+        // header: null
+    }
 })
-export default createAppContainer(AppNavigator);
+
+//  欢迎页 路由
+const InitNavigator = createStackNavigator({
+    WelcomePage: {
+        screen: WelcomePage,
+        navigationOptions: {
+            header: null
+        }
+    }
+})
+
+//NOTE: 通过 createSwitchNavigator 一次只显示一个页面。作用： 将欢迎页和首页联系起来
+const RootNavigator = createSwitchNavigator({
+    Init: InitNavigator,
+    Total: TotalNavigator,
+})
+
+const AppNavigator = createAppContainer(RootNavigator);
+
+const App = createReduxContainer(AppNavigator);
+const mapStateToProps = (state) => ({
+    state: state.nav,
+});
+
+const AppWithNavigationState = connect(mapStateToProps)(App);
+
+export {
+    AppNavigator,
+    AppWithNavigationState,
+}
