@@ -20,7 +20,7 @@ export default class CustomTabBar extends Component {
 
         this.state = {
             activeTab: props.activeTab,
-            laoutTextList:[],
+            laoutTextList: [],
             leftPosition: 15, // 文本距左边的距离
         }
         this.laoutList = [] //按钮数据容器
@@ -46,13 +46,14 @@ export default class CustomTabBar extends Component {
             width: 0.9,
             left: 0,
         };
-        const {laoutTextList, leftPosition} = this.state
+        const { laoutTextList = [], leftPosition } = this.state
 
         const scaleValue = () => {
             let arr = new Array(numberOfTabs);
-            return arr.fill(0).reduce( (pre, cur, idx) => {
+            return arr.fill(0).reduce((pre, cur, idx) => {
                 pre.inputRange.push(idx)
-                laoutTextList.length ===  numberOfTabs ? pre.outputRange.push(laoutTextList[idx].width) : pre.outputRange.push(10)
+                const textWidth = laoutTextList[idx] ? laoutTextList[idx].width : 10 // 文本长度
+                pre.outputRange.push(textWidth)
                 return pre
             }, { inputRange: [], outputRange: [] })
         }
@@ -61,10 +62,11 @@ export default class CustomTabBar extends Component {
         const translateXValue = () => {
             let arr = new Array(numberOfTabs);
             // console.log("arr", arr.fill(0), defaultScale)
-            return arr.fill(0).reduce( (pre, cur, idx) => {
+            return arr.fill(0).reduce((pre, cur, idx) => {
                 pre.inputRange.push(idx)
                 //  需要等tab数据渲染 结束才可添加 *** 应该可优化 暂没想到怎么写
-                laoutTextList.length ===  numberOfTabs && this.laoutList.length === numberOfTabs ? pre.outputRange.push(this.laoutList[idx].x + (laoutTextList[idx].width + leftPosition )/2) : pre.outputRange.push(idx*10)
+                const textX = this.laoutList[idx] && laoutTextList[idx] ? this.laoutList[idx].x + (laoutTextList[idx].width + leftPosition) / 2 : idx * 10
+                pre.outputRange.push(textX)
                 // if (laoutTextList.length ===  numberOfTabs && this.laoutList.length === numberOfTabs) {
                 //     // console.log("laoutList[idx]  w宽度 ww",idx,this.laoutList[idx].width,'---',laoutTextList[idx].width)
                 //     console.log("laoutList[idx]  x坐标 xx",idx,this.laoutList[idx].x,'---',laoutTextList[idx].x)
@@ -80,8 +82,8 @@ export default class CustomTabBar extends Component {
                     tabUnderlineStyle,
                     {
                         transform: [
-                            { translateX},
-                            { scaleX}
+                            { translateX },
+                            { scaleX }
                         ],
                     },
                     this.props.underlineStyle,
@@ -91,7 +93,7 @@ export default class CustomTabBar extends Component {
     }
 
     _renderTab(name, page, isTabActive, onPressHandler) {
-        const {leftPosition} = this.state
+        const { leftPosition } = this.state
         const textColor = isTabActive ? this.props.activeColor : this.props.inactiveColor;
         const fontWeight = isTabActive ? 'bold' : 'normal';
         const Button = Platform.OS == 'ios' ? ButtonIos : ButtonAndroid;
@@ -110,7 +112,7 @@ export default class CustomTabBar extends Component {
             <View style={[styles.tab]}>
                 <Text
                     onLayout={e => this.setTextLaout(e.nativeEvent.layout, page)}
-                    style={[{ color: textColor, fontWeight,paddingLeft:leftPosition }]}>{name}</Text>
+                    style={[{ color: textColor, fontWeight, paddingLeft: leftPosition }]}>{name}</Text>
             </View>
         </Button>);
     }
@@ -145,7 +147,7 @@ export default class CustomTabBar extends Component {
 
     setTextLaout(layout, index) {
         //存单个项的位置
-        const {laoutTextList} = this.state
+        const { laoutTextList } = this.state
         laoutTextList[index] = layout
         // console.log("layout--",layout)
         this.setState({
