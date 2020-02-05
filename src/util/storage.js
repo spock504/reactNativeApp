@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { stringify, parse } from 'qs';
 
-export async function setStorage(key, value) {
+export async function setStorage(key, value, callback = null) {
     try {
-        if (typeof value === 'object') value = stringify(value) // 对象存储时需要转化为字符串
+        // console.log("缓存的类型",typeof value,stringify(value))
+        if (typeof value === 'object') value = JSON.stringify(value) // 对象存储时需要转化为字符串
         if (typeof value === 'number') value = value + '' // 数字转化成字符串
-        await AsyncStorage.setItem(key, value)
+        await AsyncStorage.setItem(key, value, callback)
     } catch (error) {
         console.log('storage setItem error : ', error)
     }
@@ -14,9 +14,8 @@ export async function setStorage(key, value) {
 export async function getStorage(key) {
     try {
         const value = await AsyncStorage.getItem(key)
-        console.log("value",value)
         if (value && value.indexOf('=') !== -1) { // 当是对象时存储含有等号
-            return parse(value)
+            return JSON.parse(value)
         } else {
             return value
         }
@@ -25,9 +24,9 @@ export async function getStorage(key) {
     }
 }
 
-export async function deleteStorage(key) {
+export async function deleteStorage(key, callback = null) {
     try {
-        await AsyncStorage.removeItem(key)
+        await AsyncStorage.removeItem(key, callback)
     } catch (error) {
         console.log('storage removeItem error', error)
     }

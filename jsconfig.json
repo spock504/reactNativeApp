@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2016",
+        "jsx": "preserve"
+    },
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*"
+    ],
+    "Print to js class": {
+        "prefix": "zhushicc",
+        "body": [
+            "/*",
+            " *@Description: $0",
+            " *@ClassAuthor: Happy Ma",
+            " *@Date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} ${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}",
+            "*/"
+        ],
+    },
+    "Print to js method": {
+        "prefix": "zhushimm",
+        "body": [
+            "/*",
+            " *@Description: $0",
+            " *@MethodAuthor:  Happy Ma",
+            " *@Date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} ${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}",
+            "*/"
+        ],
+    },
+}

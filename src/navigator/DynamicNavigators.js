@@ -22,6 +22,7 @@ import WelcomePage from '../page/Welcome/WelcomePage'
 import TrendingPage from '../page/Home/TrendingPage'
 import DetailPage from '../page/Detail/Detail'
 import MyPage from '../page/Home/MyPage'
+import StorageDataPage  from '../page/Demo/StorageData'
 
 const SwitchNavigatorConfig = {
     initialRouteName: 'HomePage',
@@ -89,6 +90,7 @@ MainNavigator.navigationOptions = ({ navigation }) => {
 const TotalNavigator = createStackNavigator({
     Main: MainNavigator,
     DetailPage: DetailPage,
+    StorageDataPage:StorageDataPage,
 }, {
     defaultNavigationOptions: {
         // header: null

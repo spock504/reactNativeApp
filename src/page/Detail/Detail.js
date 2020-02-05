@@ -51,11 +51,14 @@ class DetailPage extends React.Component {
     };
 
     setItemStorage() {
-        setStorage(STORAGE_KEY, '我是存储的字串')
+        setStorage(STORAGE_KEY, '23333', () => {
+            console.log("设置缓存成功")
+        })
     }
 
     getItemStorage() {
         getStorage(STORAGE_KEY).then((value) => {
+            console.log("获取缓存成功",value)
             this.setState({
                 storageValue: value
             })
@@ -63,10 +66,13 @@ class DetailPage extends React.Component {
     }
 
     deleteItemStorage() {
-        deleteStorage(STORAGE_KEY)
-        this.setState({
-            storageValue: ''
+        deleteStorage(STORAGE_KEY).then(() => {
+            console.log("删除缓存成功")
+            this.setState({
+                storageValue: ''
+            })
         })
+      
     }
 
     render() {

@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import NavigationUtil from '../../navigator/NavigationUtil'
 import CustomTabBar from '../../common/CustomTabBar'
 import { actionTest } from '../../actions/home'
+import AsyncStorage from '@react-native-community/async-storage';
 
 // const Styles = StyleSheet.create({
 //   underline: {
@@ -25,6 +26,7 @@ class HomeTabView extends Component {
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(actionTest({ payload: '测试一下' }))
+    // AsyncStorage.clear() 
   }
 
 
@@ -43,7 +45,8 @@ class HomeTabView extends Component {
       >
         <View tabLabel='Tab 热门'>
           <Text>热门</Text>
-          <Text onPress={() => NavigationUtil.goToPage('DetailPage')}>跳转外层tab</Text>
+          <Text onPress={() => NavigationUtil.goToPage('DetailPage')}>跳转详情页</Text>
+          <Text onPress={() => NavigationUtil.goToPage('StorageDataPage')}>离线缓存框架</Text>
         </View>
         <Text tabLabel='Tab 中测试'>Tab</Text>
         <Text tabLabel='Tab 关注'>关注</Text>
