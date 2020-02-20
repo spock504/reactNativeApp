@@ -47,6 +47,7 @@ class HomeTabView extends Component {
           <Text>热门</Text>
           <Text onPress={() => NavigationUtil.goToPage('DetailPage')}>跳转详情页</Text>
           <Text onPress={() => NavigationUtil.goToPage('StorageDataPage')}>离线缓存框架</Text>
+          <Text onPress={() => NavigationUtil.goToPage('CatchErrorPage')}>错误异常保护</Text>
         </View>
         <Text tabLabel='Tab 中测试'>Tab</Text>
         <Text tabLabel='Tab 关注'>关注</Text>

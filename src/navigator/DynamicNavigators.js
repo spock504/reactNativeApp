@@ -23,6 +23,7 @@ import TrendingPage from '../page/Home/TrendingPage'
 import DetailPage from '../page/Detail/Detail'
 import MyPage from '../page/Home/MyPage'
 import StorageDataPage  from '../page/Demo/StorageData'
+import CatchErrorPage from '../page/Demo/CatchError'
 
 const SwitchNavigatorConfig = {
     initialRouteName: 'HomePage',
@@ -89,8 +90,9 @@ MainNavigator.navigationOptions = ({ navigation }) => {
 //  配置app头部导航栏样式
 const TotalNavigator = createStackNavigator({
     Main: MainNavigator,
-    DetailPage: DetailPage,
-    StorageDataPage:StorageDataPage,
+    DetailPage,
+    StorageDataPage,
+    CatchErrorPage
 }, {
     defaultNavigationOptions: {
         // header: null

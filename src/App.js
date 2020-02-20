@@ -16,9 +16,6 @@ import store from './store/index'
 
 class AppContainer extends Component {
   render() {
-    // store
- 
-
     return (
       <Provider store={store}>
         <AppWithNavigationState />

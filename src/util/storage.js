@@ -31,3 +31,11 @@ export async function deleteStorage(key, callback = null) {
         console.log('storage removeItem error', error)
     }
 }
+
+export async function deleteAllStorage(callback = null) {
+    try {
+        await AsyncStorage.clear(callback)
+    } catch (error) {
+        console.log('storage removeItem error', error)
+    }
+}
