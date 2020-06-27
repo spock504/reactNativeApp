@@ -16,15 +16,19 @@ class StorageData extends React.Component {
         this.dataStorage = new DataStore()
     }
     componentDidMount() {
-        getStorage('https://api.github.com/search/repositories?q=Java').then(value=>{
-            console.log("缓存的数据",value)
-        })
+        // getStorage('https://api.github.com/search/repositories?q=Java').then(value=>{
+        //     console.log("缓存的数据",value)
+        // })
     }
     
 
     loadData() {
-        // console.log("搜索值", this.value)
+        console.log("搜索值", this.value)
         let url = `https://api.github.com/search/repositories?q=${this.value}`
+        // 先清空值
+        this.setState({
+            showText:'',
+        })
         this.dataStorage.fetchData(url)
             .then(data => {
                 let showText = `初次数据加载时间 :${new Date(parseInt(data.timestamp))} \n 数据${JSON.stringify(data.data)}`

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, BackHandler } from 'react-native';
+import { View, Text, BackHandler,TextInput,TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from "react-navigation";
 
@@ -15,11 +15,32 @@ class DetailPage extends React.Component {
         }
     }
     componentDidMount() {
+        let lastTime = null;
+        const DELAY_INTERVAL = 1000;
+        let count = 0
+        function _updateCountDownTimer(timestamp) {
+          lastTime = lastTime || timestamp;
+          const tickInterval = timestamp - lastTime;// 时间间隔差
+          if (tickInterval >= DELAY_INTERVAL) {
+            count ++
+            console.log("来了 这里操作")
+            lastTime = timestamp + (tickInterval - DELAY_INTERVAL); // 执行时间
+          }
+          if(count > 3) {
+            console.log("lai 暂停",count)
+            cancelAnimationFrame(this.timer)
+            return
+          }
+          this.timer = requestAnimationFrame(_updateCountDownTimer.bind(this));
+        }
+        if (!this.timer) {
+            this.timer = requestAnimationFrame(_updateCountDownTimer.bind(this));
+        }
+        // this.loadData() // 请求
 
-        this.loadData() // 请求
-
-        BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
+        // BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
     }
+
 
     loadData() {
         let url = 'https://api.github.com/search/repositories?q=java'
@@ -39,7 +60,8 @@ class DetailPage extends React.Component {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
+        cancelAnimationFrame(this.timer)
+        // BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
     }
     onBackPress = () => {
         const { dispatch, nav } = this.props;
@@ -75,11 +97,21 @@ class DetailPage extends React.Component {
       
     }
 
+    changeText () {
+        console.log("来看下",this.textRef.setNativeProps)
+        this.textRef.setNativeProps({text:parseInt(Math.random()*(20-10+1))+10 + ''})
+    }
+
     render() {
         const { storageValue } = this.state
         return (
             <View style={{ flex: 1, backgroundColor: '#f5f4f9' }}>
                 <Text>DetailPage Screen</Text>
+                <View style={{flexDirection:'row',justifyContent:'space-between',marginBottom:10}}>
+                    <TextInput ref={(ref) =>  this.textRef = ref} editable={false} defaultValue="2333" />
+                    <Text onPress={() => this.changeText()}>点击修改</Text>
+                </View>
+                
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                     <Text onPress={() => this.setItemStorage()}>存储</Text>
                     <Text onPress={() => this.getItemStorage()}>获取</Text>
