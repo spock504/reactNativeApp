@@ -35,14 +35,18 @@ class HomeTabView extends Component {
   }
 
   onPopModal(bool) {
-    this.setState({
-      isPopModal: bool,
-    });
+    this.popModalRef.show();
+  }
+
+  handleSelect(item) {
+    console.log('选中', item);
+    this.popModalRef.dismiss(); // 通过ref获取抵用子组件的方法
   }
 
   render() {
     // console.log("this --home", this.props.homeReducer)
     const {popData} = this.state;
+
     return (
       <>
         <ScrollableTabView
@@ -69,7 +73,15 @@ class HomeTabView extends Component {
             </Text>
             <Text onPress={() => this.onPopModal(true)}>pop弹窗</Text>
 
-            <PopModal onClose={() => this.onPopModal(false)} data={popData} />
+            <Text onPress={() => NavigationUtil.goToPage('WebviewPage')}>
+              WebviewPage页面
+            </Text>
+
+            <PopModal
+              ref={ref => (this.popModalRef = ref)}
+              data={popData}
+              onSelect={item => this.handleSelect(item)}
+            />
           </View>
           <Text tabLabel="Tab 中测试">Tab</Text>
           <Text tabLabel="Tab 关注">关注</Text>

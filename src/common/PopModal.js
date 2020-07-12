@@ -4,8 +4,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default class PopModal extends Component {
   state = {
-    visible: true,
+    visible: false,
   };
+
+  show() {
+    this.setState({
+      visible: true,
+    });
+  }
 
   dismiss() {
     this.setState({
@@ -14,12 +20,9 @@ export default class PopModal extends Component {
   }
   render() {
     const {visible} = this.state;
-    const {onClose, data = []} = this.props;
+    const {onClose, data = [], onSelect} = this.props;
     return (
-      <Modal
-        transparent={true}
-        visible={visible}
-        onRequestClose={() => onClose}>
+      <Modal transparent={true} visible={visible}>
         <TouchableOpacity
           style={styles.container}
           onPress={() => this.dismiss()}>
@@ -33,7 +36,8 @@ export default class PopModal extends Component {
               return (
                 <TouchableOpacity
                   key={`key_${index}`}
-                  style={styles.textContainer}>
+                  style={styles.textContainer}
+                  onPress={() => onSelect(item)}>
                   <Text style={styles.text}>{item.name}</Text>
                 </TouchableOpacity>
               );
