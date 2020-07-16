@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, SafeAreaView} from 'react-native';
 import ScrollableTabView, {
   ScrollableTabBar,
 } from 'react-native-scrollable-tab-view';
@@ -48,7 +48,7 @@ class HomeTabView extends Component {
     const {popData} = this.state;
 
     return (
-      <>
+      <SafeAreaView style={{flex: 1}}>
         <ScrollableTabView
           // style={{ marginTop: 20 }}
           // tabBarUnderlineStyle={Styles.underline} // 下划线样式
@@ -83,12 +83,12 @@ class HomeTabView extends Component {
               onSelect={item => this.handleSelect(item)}
             />
           </View>
-          <Text tabLabel="Tab 中测试">Tab</Text>
+          <Text tabLabel="Tab 测试">Tab</Text>
           <Text tabLabel="Tab 关注">关注</Text>
           <Text tabLabel="Tab #4 word">word</Text>
           <Text tabLabel="Tab #5">project</Text>
         </ScrollableTabView>
-      </>
+      </SafeAreaView>
     );
   }
 }
