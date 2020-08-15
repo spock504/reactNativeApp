@@ -10,6 +10,9 @@ import CustomTabBar from '../../common/CustomTabBar';
 import {actionTest} from '../../actions/home';
 import AsyncStorage from '@react-native-community/async-storage';
 import PopModal from '../../common/PopModal';
+import ToastExample from '../../util/ToastExample';
+import ImageView from '../../util/ImageView';
+import IMAGE_SRC from '../../assets/images/icon.png';
 
 // const Styles = StyleSheet.create({
 //   underline: {
@@ -43,10 +46,15 @@ class HomeTabView extends Component {
     this.popModalRef.dismiss(); // 通过ref获取抵用子组件的方法
   }
 
+  handleToast = () => {
+    console.log('ToastExample', ToastExample);
+    ToastExample.show('Awesome', ToastExample.SHORT);
+  };
+
   render() {
     // console.log("this --home", this.props.homeReducer)
+    // console.log('View', View);
     const {popData} = this.state;
-
     return (
       <SafeAreaView style={{flex: 1}}>
         <ScrollableTabView
@@ -76,7 +84,24 @@ class HomeTabView extends Component {
             <Text onPress={() => NavigationUtil.goToPage('WebviewPage')}>
               WebviewPage页面
             </Text>
-
+            <Text onPress={() => NavigationUtil.goToPage('ParallaxView')}>
+              Parallax 滚动视差页面
+            </Text>
+            <Text onPress={() => NavigationUtil.goToPage('SortableListPage')}>
+              SortableListPage 拖拽
+            </Text>
+            <View style={{marginVertical: 10}}>
+              <Text>原生模块的调试</Text>
+              <Text onPress={() => this.handleToast()}>android Toast</Text>
+              <Text>原生图片⬇️</Text>
+              <ImageView
+                src={[{
+                  uri:'http://pic-bucket.ws.126.net/photo/0001/2020-08-11/FJOOL6JO00AN0001NOS.jpg',
+                }]}
+                borderRadius={10}
+                style={{width:100,height:100}}
+              />
+            </View>
             <PopModal
               ref={ref => (this.popModalRef = ref)}
               data={popData}

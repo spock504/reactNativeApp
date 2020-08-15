@@ -15,11 +15,8 @@ import HomePage from '../page/Home/HomeTabViewPage'; // 插件实现 可滚动ta
 // import HomePage from '../page/Home/HomeTabFitPage' // 插件实现 自适应&&不可滚动
 import WelcomePage from '../page/Welcome/WelcomePage';
 import TrendingPage from '../page/Home/TrendingPage';
-import DetailPage from '../page/Detail/Detail';
 import MyPage from '../page/Home/MyPage';
-import StorageDataPage from '../page/Demo/StorageData';
-import CatchErrorPage from '../page/Demo/CatchError';
-import WebviewPage from '../common/WebviewPage';
+import router from '../router';
 
 const SwitchNavigatorConfig = {
   initialRouteName: 'HomePage',
@@ -80,10 +77,7 @@ MainNavigator.navigationOptions = ({navigation}) => {
 const TotalNavigator = createStackNavigator(
   {
     Main: MainNavigator,
-    DetailPage,
-    StorageDataPage,
-    CatchErrorPage,
-    WebviewPage,
+    ...router,
   },
   {
     defaultNavigationOptions: {

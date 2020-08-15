@@ -7,6 +7,9 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.rn_toast_module.CustomToastPackage;
+import com.rn_view_module.RNViewHandlePackage;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -25,6 +28,9 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+            packages.add(new CustomToastPackage()); // <-- 添加这一行，类名替换成你的Package类的名字 name.
+            packages.add(new RNViewHandlePackage());
+
           return packages;
         }
 
